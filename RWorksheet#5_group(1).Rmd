@@ -19,14 +19,20 @@ install.packages("dplyr")
 install.packages("rvest")
 install.packages("httr")
 install.packages("polite")
+install.packages("ggplot2")
 
 library(rvest)
 library(httr)
 library(dplyr)
 library(polite)
+library(ggplot2)
 
 ```{r}
 #1. 
+library(polite)
+library(rvest)
+library(httr)
+library(dplyr)
 link <- "https://www.imdb.com/chart/toptv/?ref_=nv_tvv_250"
 session <- bow(link, user_agent= "Educational Purposes")
 session
@@ -64,6 +70,18 @@ year <- scrape(session) %>%
     html_nodes('span.sc-479faa3c-8:nth-of-type(1)') %>%
     html_text()
 year [1:51]
+min_length <- min(length(rank), length(title), length(rating), length(numberofvoters), length(episodes), length(year))
+min_length
+
+data <- data.frame(
+  Rank = seq(1, min_length),
+  Title = title[1:min_length],
+  Rating = rating[1:min_length],
+  NumberOfVoters = numberofvoters[1:min_length],
+  Episodes = episodes[1:min_length],
+  Year = (sapply(year[1:min_length], function(x) if (grepl("^\\d+$", x)) as.integer(x) else NA))
+)
+View(data)
  
 ``` 
 
@@ -226,7 +244,25 @@ TextRevtv5
 #3.
 
 ```{r}
-#still working~~
+library(ggplot2)
+library(dplyr)
+
+ggplot(data, aes(x = Year, fill = factor(Year))) +
+  geom_bar() +
+  labs(title = "Number of TV Shows Released by Year",
+       x = "Year",
+       y = "Number of TV Shows") +
+  theme_minimal()
+
+# Find the year with the most number of TV shows released
+most_shows_year <- data %>%
+  group_by(Year) %>%
+  summarize(NumShows = n()) %>%
+  arrange(desc(NumShows)) %>%
+  slice(1)
+
+cat("Year with the most TV shows released:", most_shows_year$Year, "\n")
+cat("Number of TV shows released:", most_shows_year$NumShows, "\n")
 
 ```
 
@@ -314,7 +350,6 @@ prodreview3 <- scrape(session8) %>%
     html_nodes('#acrPopover') %>%
     html_text()
 prodreview3
-
 
 ```
 
