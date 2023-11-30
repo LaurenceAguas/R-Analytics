@@ -4,9 +4,17 @@ output: html_document
 date: "2023-11-29"
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+#GROUP 3
+#Members:
+#Laurence Aguas
+#Dianah Marie Canonicato
+#Ann Margareth Camayodo
+#Paula Mae Salvador
+
 install.packages("dplyr")
 install.packages("rvest")
 install.packages("httr")
