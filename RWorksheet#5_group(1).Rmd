@@ -17,45 +17,53 @@ library(httr)
 library(dplyr)
 library(polite)
 
-
+```{r}
 #1. 
 link <- "https://www.imdb.com/chart/toptv/?ref_=nv_tvv_250"
 session <- bow(link, user_agent= "Educational Purposes")
 session
 
+#rank of the Top 50 Tv Shows
 rank <- scrape(session)  %>% html_nodes('h3.ipc-title__text') %>% html_text()
 rank [1:51]
 
+#Titles of the Top 50 Tv Shows
 title <- scrape(session) %>%
     html_nodes('h3.ipc-title__text') %>%
     html_text()
 title [1:51]
 
+#Rating of the Top 50 Tv Shows
 rating <- scrape(session) %>%
     html_nodes('span.ipc-rating-star--imdb') %>%
     html_text()
-    
 rating [1:51]
 
+#Numbers Of Voters of the Top 50 Tv Shows
 numberofvoters <- scrape(session) %>%
     html_nodes('span.ipc-rating-star--imdb') %>%
     html_text()
 numberofvoters [1:51]
 
+#This shows on how many Episodes does the Top 50 Tv Shows have
 episodes <- scrape(session) %>%
     html_nodes('span.ipc-rating-star--voteCount') %>%
     html_text()
 episodes [1:51]
 
+#The Year it was released (The Top 50 Tv Shows)
 year <- scrape(session) %>%
     html_nodes('span.sc-479faa3c-8:nth-of-type(1)') %>%
     html_text()
-    
 year [1:51]
-    
+ 
+``` 
+
+```{r}
 
 #2.
-#first
+#Reviewers Data (Name, Date, Rating, Title of the Tv show, and the comment of each reviewers)
+
 firstrevlink <- "https://www.imdb.com/title/tt0903747/reviews?ref_=tt_urv"
 session2 <- bow(firstrevlink, user_agent= "Educational Purposes")
 session2
@@ -85,7 +93,7 @@ TextRevtv1 <-scrape(session2) %>%
     html_text()
 TextRevtv1
 
-#second
+#Second Data
 secondrevlink <- "https://www.imdb.com/title/tt5491994/reviews?ref_=tt_urv"
 session3 <- bow(secondrevlink, user_agent= "Educational Purposes")
 session3
@@ -205,9 +213,19 @@ TextRevtv5 <-scrape(session5) %>%
     html_text()
 TextRevtv5
 
+
+```
 #3.
 
+```{r}
+
+```
+
+
+
 #4.
+
+```{r}
 #1stproduct
 amazonlink <- "https://www.amazon.com/Google-Pixel-Unlocked-Smartphone-Advanced/dp/B0CGTNPFZD/ref=sr_1_1_sspa?crid=2ASB0MTR2NB61&keywords=phones&qid=1701305956&sprefix=phon%2Caps%2C460&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1"
 session6 <- bow(amazonlink, user_agent= "Educational Purposes")
@@ -288,5 +306,6 @@ prodreview3 <- scrape(session8) %>%
     html_text()
 prodreview3
 
-git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
+
+```
+
