@@ -1,0 +1,93 @@
+---
+title: "RWorksheets#6 (Group 3)"
+output: pdf_document
+date: "2023-12-21"
+---
+
+#Group 3
+#Members: 
+#Laurence Aguas
+#Paula Salvador
+#Dianah Marie Canonicato
+#Ann Margareth Camayodo
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The Shawhank Redemption 
+#1.
+
+
+```{r}
+
+library(readr)
+library(tm)
+library(NLP)
+library(RColorBrewer)
+
+Shawhank <- read.csv("RevReviews.csv")
+ShawhankRatings <- read.csv("RevRatings.csv")
+
+# Sentimental Analysis Ratings
+ShawhankSentimentAnalysis <- ifelse(ShawhankRatings$Ratings > 5, "Positive",
+                                    ifelse(ShawhankRatings$Ratings == 5, "Average",
+                                           "Negative"))
+ShawhankSentimentAnalysis
+# Set encoding to UTF-8
+Shawhank$TextReviews <- iconv(Shawhank$TextReviews, to = "UTF-8", sub = "byte")
+
+# Corpus for text analysis
+ShawhankCorpus <- Corpus(VectorSource(Shawhank$TextReviews))
+
+# Corpus for text analysis
+ShawhankCorpus <- Corpus(VectorSource(Shawhank$TextReviews))
+
+# Remove English stop words
+ShawhankCorpus <- tm_map(ShawhankCorpus, content_transformer(tolower))
+ShawhankCorpus <- tm_map(ShawhankCorpus, removePunctuation)
+ShawhankCorpus <- tm_map(ShawhankCorpus, removeNumbers)
+ShawhankCorpus <- tm_map(ShawhankCorpus, removeWords, stopwords("en"))
+ShawhankCorpus <- tm_map(ShawhankCorpus, stripWhitespace)
+
+# Document term matrix
+Shawhank_DTM <- DocumentTermMatrix(ShawhankCorpus)
+
+
+```
+
+#Generate a Word Cloud
+```{r}
+install.packages("wordcloud")
+library(wordcloud)
+
+
+ShawhankWordCloud <- wordcloud(words = names(sort(colSums(as.matrix(Shawhank_DTM)))), 
+                                freq = sort(colSums(as.matrix(Shawhank_DTM))),
+                                min.freq = 1,
+                                scale = c(3, 0.5),
+                                max.words = 200, # Limit the number of words displayed
+                                random.order = FALSE, # Display words in decreasing frequency
+                                colors = brewer.pal(8, "Dark2"))
+
+
+ShawhankWordCloud
+```
+
+#Visualization
+
+```{r}
+library(ggplot2)
+
+# Create a data frame from the sentiment analysis results
+sentiment_data <- data.frame(Legend = ShawhankSentimentAnalysis)
+
+# Plot sentiment distribution
+ggplot(sentiment_data, aes(x = Legend, fill = Legend)) +
+  geom_bar() +
+  labs(title = "Visual",
+       x = "Ratings",
+       y = "Numbers Of Reviewers") +
+  scale_fill_manual(values = c("Positive" = "green", "Average" = "yellow", "Negative" = "red"))
+
+```
