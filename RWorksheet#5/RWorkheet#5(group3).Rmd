@@ -1,13 +1,13 @@
 ---
 title: "R Analytics"
-output: html_document
-date: "2023-11-29"
+output: pdf_document
+date: "2023-12-13"
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 #GROUP 3
 #Members:
 #Laurence Aguas
@@ -39,55 +39,46 @@ session
 
 #rank of the Top 50 Tv Shows
 rank <- scrape(session)  %>% html_nodes('h3.ipc-title__text') %>% html_text()
-rank [1:51]
+rank [2:51]
 
 #Titles of the Top 50 Tv Shows
 title <- scrape(session) %>%
     html_nodes('h3.ipc-title__text') %>%
     html_text()
-title [1:51]
+title [2:51]
 
 #Rating of the Top 50 Tv Shows
 rating <- scrape(session) %>%
     html_nodes('span.ipc-rating-star--imdb') %>%
     html_text()
-rating [1:51]
+rating [2:51]
 
 #Numbers Of Voters of the Top 50 Tv Shows
 numberofvoters <- scrape(session) %>%
     html_nodes('span.ipc-rating-star--imdb') %>%
     html_text()
-numberofvoters [1:51]
+numberofvoters [2:51]
 
 #This shows on how many Episodes does the Top 50 Tv Shows have
 episodes <- scrape(session) %>%
     html_nodes('span.ipc-rating-star--voteCount') %>%
     html_text()
-episodes [1:51]
+episodes [2:51]
 
-#The Year it was released (The Top 50 Tv Shows)
+# The Year it was released (The Top 50 Tv Shows)
 year <- scrape(session) %>%
-    html_nodes('span.sc-479faa3c-8:nth-of-type(1)') %>%
+    html_nodes('span.sc-43986a27-8:nth-of-type(1)') %>%
     html_text()
-year [1:51]
-min_length <- min(length(rank), length(title), length(rating), length(numberofvoters), length(episodes), length(year))
-min_length
-
-data <- data.frame(
-  Rank = seq(1, min_length),
-  Title = title[1:min_length],
-  Rating = rating[1:min_length],
-  NumberOfVoters = numberofvoters[1:min_length],
-  Episodes = episodes[1:min_length],
-  Year = (sapply(year[1:min_length], function(x) if (grepl("^\\d+$", x)) as.integer(x) else NA))
-)
-View(data)
+year [2:51]
  
 ``` 
 
-```{r}
+```{r,error=TRUE}
 
-#2.
+library(polite)
+library(rvest)
+library(httr)
+library(dplyr)
 #Reviewers Data (Name, Date, Rating, Title of the Tv show, and the comment of each reviewers)
 
 firstrevlink <- "https://www.imdb.com/title/tt0903747/reviews?ref_=tt_urv"
@@ -119,6 +110,34 @@ TextRevtv1 <-scrape(session2) %>%
     html_text()
 TextRevtv1
 
+#
+lengths1 <- c(
+  ReviewerName = length(ReviewersNametv1),
+  ReviewDate = length(ReviewsDatetv1),
+  UserRating = length(UserRatingtv1),
+  Title = length(RevTitletv1),
+  Comment = length(TextRevtv1)
+)
+
+
+max_length <- max(lengths1)
+
+ReviewersNametv1 <- c(ReviewersNametv1, rep(NA, max_length - length(ReviewersNametv1)))
+ReviewsDatetv1 <- c(ReviewsDatetv1, rep(NA, max_length - length(ReviewsDatetv1)))
+UserRatingtv1 <- c(UserRatingtv1, rep(NA, max_length - length(UserRatingtv1)))
+RevTitletv1 <- c(RevTitletv1, rep(NA, max_length - length(RevTitletv1)))
+TextRevtv1 <- c(TextRevtv1, rep(NA, max_length - length(TextRevtv1)))
+
+tv_show1 <- data.frame(
+  ReviewerName = ReviewersNametv1,
+  ReviewDate = ReviewsDatetv1,
+  UserRating = UserRatingtv1,
+  Title = RevTitletv1,
+  Comment = TextRevtv1
+)
+
+
+
 #Second Data
 secondrevlink <- "https://www.imdb.com/title/tt5491994/reviews?ref_=tt_urv"
 session3 <- bow(secondrevlink, user_agent= "Educational Purposes")
@@ -148,6 +167,33 @@ TextRevtv2 <-scrape(session3) %>%
     html_nodes('.collapsable div.text') %>%
     html_text()
 TextRevtv2
+
+#
+lengths2 <- c(
+  ReviewerName = length(ReviewersNametv2),
+  ReviewDate = length(ReviewsDatetv2),
+  UserRating = length(UserRatingtv2),
+  Title = length(RevTitletv2),
+  Comment = length(TextRevtv2)
+)
+
+# Find the maximum length
+max_length2 <- max(lengths2)
+
+ReviewersNametv2 <- c(ReviewersNametv2, rep(NA, max_length - length(ReviewersNametv2)))
+ReviewsDatetv2 <- c(ReviewsDatetv2, rep(NA, max_length - length(ReviewsDatetv2)))
+UserRatingtv2 <- c(UserRatingtv2, rep(NA, max_length - length(UserRatingtv2)))
+RevTitletv2 <- c(RevTitletv2, rep(NA, max_length - length(RevTitletv2)))
+TextRevtv2 <- c(TextRevtv2, rep(NA, max_length - length(TextRevtv2)))
+
+tv_show2 <- data.frame(
+  ReviewerName = ReviewersNametv2,
+  ReviewDate = ReviewsDatetv2,
+  UserRating = UserRatingtv2,
+  Title = RevTitletv2,
+  Comment = TextRevtv2
+)
+
 
 #third
 thirdrevlink <- "https://www.imdb.com/title/tt0185906/reviews?ref_=tt_urv"
@@ -179,6 +225,34 @@ TextRevtv3 <-scrape(session4) %>%
     html_text()
 TextRevtv3
 
+lengths3 <- c(
+  ReviewerName = length(ReviewersNametv3),
+  ReviewDate = length(ReviewsDatetv3),
+  UserRating = length(UserRatingtv3),
+  Title = length(RevTitletv3),
+  Comment = length(TextRevtv3)
+)
+
+max_length3 <- max(lengths3)
+
+ReviewersNametv3 <- c(ReviewersNametv3, rep(NA, max_length - length(ReviewersNametv3)))
+ReviewsDatetv3 <- c(ReviewsDatetv3, rep(NA, max_length - length(ReviewsDatetv3)))
+UserRatingtv3 <- c(UserRatingtv3, rep(NA, max_length - length(UserRatingtv3)))
+RevTitletv3 <- c(RevTitletv3, rep(NA, max_length - length(RevTitletv3)))
+TextRevtv3 <- c(TextRevtv3, rep(NA, max_length - length(TextRevtv3)))
+
+# Create the data frame
+tv_show3 <- data.frame(
+  ReviewerName = ReviewersNametv3,
+  ReviewDate = ReviewsDatetv3,
+  UserRating = UserRatingtv3,
+  Title = RevTitletv3,
+  Comment = TextRevtv3
+)
+
+
+
+
 #fourth
 fourthrevlink <- "https://www.imdb.com/title/tt7366338/reviews?ref_=tt_urv"
 session5 <- bow(fourthrevlink, user_agent= "Educational Purposes")
@@ -208,6 +282,33 @@ TextRevtv4 <-scrape(session5) %>%
     html_nodes('.collapsable div.text') %>%
     html_text()
 TextRevtv4
+
+lengths4 <- c(
+  ReviewerName = length(ReviewersNametv4),
+  ReviewDate = length(ReviewsDatetv4),
+  UserRating = length(UserRatingtv4),
+  Title = length(RevTitletv4),
+  Comment = length(TextRevtv4)
+)
+
+max_length4 <- max(lengths4)
+
+ReviewersNametv4 <- c(ReviewersNametv4, rep(NA, max_length - length(ReviewersNametv4)))
+ReviewsDatetv4 <- c(ReviewsDatetv4, rep(NA, max_length - length(ReviewsDatetv4)))
+UserRatingtv4 <- c(UserRatingtv4, rep(NA, max_length - length(UserRatingtv4)))
+RevTitletv4 <- c(RevTitletv4, rep(NA, max_length - length(RevTitletv4)))
+TextRevtv4 <- c(TextRevtv4, rep(NA, max_length - length(TextRevtv4)))
+
+tv_show4 <- data.frame(
+  ReviewerName = ReviewersNametv4,
+  ReviewDate = ReviewsDatetv4,
+  UserRating = UserRatingtv4,
+  Title = RevTitletv4,
+  Comment = TextRevtv4
+)
+
+
+
 
 #fifth
 fifthrevlink <- "https://www.imdb.com/title/tt2395695/reviews?ref_=tt_urv"
@@ -240,48 +341,97 @@ TextRevtv5 <-scrape(session5) %>%
 TextRevtv5
 
 
+lengths5 <- c(
+  ReviewerName = length(ReviewersNametv5),
+  ReviewDate = length(ReviewsDatetv5),
+  UserRating = length(UserRatingtv5),
+  Title = length(RevTitletv5),
+  Comment = length(TextRevtv5)
+)
+
+max_length5 <- max(lengths5)
+
+ReviewersNametv5 <- c(ReviewersNametv5, rep(NA, max_length - length(ReviewersNametv5)))
+ReviewsDatetv5 <- c(ReviewsDatetv5, rep(NA, max_length - length(ReviewsDatetv5)))
+UserRatingtv5 <- c(UserRatingtv5, rep(NA, max_length - length(UserRatingtv5)))
+RevTitletv5 <- c(RevTitletv5, rep(NA, max_length - length(RevTitletv5)))
+TextRevtv5 <- c(TextRevtv5, rep(NA, max_length - length(TextRevtv5)))
+
+tv_show5 <- data.frame(
+  ReviewerName = ReviewersNametv5,
+  ReviewDate = ReviewsDatetv5,
+  UserRating = UserRatingtv5,
+  Title = RevTitletv5,
+  Comment = TextRevtv5
+)
+
+
+
+
 ```
 #3.
 
-```{r}
-library(ggplot2)
+```{r,error=TRUE}
+library(polite)
+library(rvest)
+library(httr)
 library(dplyr)
+library(ggplot2)
 
-ggplot(data, aes(x = Year, fill = factor(Year))) +
+# Function to extract release year from IMDb URL
+get_release_year <- function(url) {
+  parts <- strsplit(url, "/")[[1]]
+  index <- which(parts == "title")
+  if (length(index) > 0 && (index + 1) <= length(parts)) {
+    return(as.integer(parts[index + 1]))
+  } else {
+    return(NA)
+  }
+}
+
+# Extract release year for each TV show
+release_years <- sapply(c(firstrevlink, secondrevlink, thirdrevlink, fourthrevlink, fifthrevlink), get_release_year)
+
+# Combine TV show data frames
+all_tv_shows <- rbind(tv_show1, tv_show2, tv_show3, tv_show4, tv_show5)
+
+# Add release year to the combined data frame
+all_tv_shows$ReleaseYear <- rep(release_years, each = nrow(all_tv_shows) / length(release_years))
+
+# Convert ReleaseYear to a factor for plotting
+all_tv_shows$ReleaseYear <- as.factor(all_tv_shows$ReleaseYear)
+
+# Create a time series graph
+ggplot(all_tv_shows, aes(x = ReleaseYear)) +
   geom_bar() +
-  labs(title = "Number of TV Shows Released by Year",
-       x = "Year",
-       y = "Number of TV Shows") +
+  labs(title = "TV Shows Released Over Time", x = "Release Year", y = "Number of TV Shows") +
   theme_minimal()
-
-# Find the year with the most number of TV shows released
-most_shows_year <- data %>%
-  group_by(Year) %>%
-  summarize(NumShows = n()) %>%
-  arrange(desc(NumShows)) %>%
-  slice(1)
-
-cat("Year with the most TV shows released:", most_shows_year$Year, "\n")
-cat("Number of TV shows released:", most_shows_year$NumShows, "\n")
-
 ```
 
 
 
 #4.
 
-```{r}
+```{r, error=TRUE}
+
+library(polite)
+library(rvest)
+library(httr)
+library(dplyr)
 #1stproduct
-amazonlink <- "https://www.amazon.com/Google-Pixel-Unlocked-Smartphone-Advanced/dp/B0CGTNPFZD/ref=sr_1_1_sspa?crid=2ASB0MTR2NB61&keywords=phones&qid=1701305956&sprefix=phon%2Caps%2C460&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1"
+
+amazonlink <- "https://www.amazon.com/Soundcore-Cancelling-Headphones-Wireless-Bluetooth/dp/B07NM3RSRQ/ref=sr_1_1_sspa?crid=1RX96MH2OB2CG&keywords=headphones&qid=1702468894&sprefix=headphone%2Caps%2C445&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1"
 session6 <- bow(amazonlink, user_agent= "Educational Purposes")
 
+
 price <-scrape(session6) %>%
-    html_nodes('#corePriceDisplay_desktop_feature_div .a-price-whole') %>%
+    html_nodes('.reinventPricePriceToPayMargin span.a-price-whole') %>%
     html_text()
 price
 
+
 description <-scrape(session6) %>%
-    html_nodes('#feature-bullets .a-list-item') %>%
+    html_nodes('div.a-spacing-medium.a-spacing-top-small') %>%
     html_text()
 description
 
@@ -300,8 +450,6 @@ prodreview
 amazonlink2nd <- "https://www.amazon.com/dp/B09S5MJLF6/ref=sspa_dk_detail_2?psc=1&pd_rd_i=B09S5MJLF6&pd_rd_w=tkc0I&content-id=amzn1.sym.386c274b-4bfe-4421-9052-a1a56db557ab&pf_rd_p=386c274b-4bfe-4421-9052-a1a56db557ab&pf_rd_r=AFCCC2P8F4VENZZF4VRZ&pd_rd_wg=GH9kV&pd_rd_r=585deed2-ce5f-497b-b3f1-dbc0ea621f62&s=wireless&sp_csd=d2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEyQzFIRDc2SUVHRlU5JmVuY3J5cHRlZElkPUEwMzMxNzg1MlBaVzRHV042M0hSNyZlbmNyeXB0ZWRBZElkPUEwODMzMDgyMUhUNlhSRVNSTlM3RCZ3aWRnZXROYW1lPXNwX2RldGFpbF90aGVtYXRpYyZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU="
 
 session7 <- bow(amazonlink2nd, user_agent= "Educational Purposes")
-
-
 
 price2 <-scrape(session7) %>%
     html_nodes('#corePriceDisplay_desktop_feature_div .a-price-whole') %>%
@@ -325,31 +473,5 @@ prodreview2
 
 #3rdproduct
 
-amazonlink3rd <- "https://www.amazon.com/OUKITEL-WP21-Smartphone-Unlocked-Waterproof/dp/B0BLZ7CRSC/ref=sr_1_2_sspa?crid=2ASB0MTR2NB61&keywords=phones&qid=1701307426&sprefix=phon%2Caps%2C460&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1"
-
-session8 <- bow(amazonlink3rd, user_agent= "Educational Purposes")
-
-
-
-price3 <- scrape(session8) %>%
-    html_nodes('.reinventPricePriceToPayMargin span.a-price-whole') %>%
-    html_text()
-price3
-
-description3 <-scrape(session8) %>%
-    html_nodes('#feature-bullets .a-list-item') %>%
-    html_text()
-description3
-
-prodrating3 <-scrape(session8) %>%
-    html_nodes('.a-size-base span.a-size-medium.a-color-base') %>%
-    html_text()
-prodrating3
-
-prodreview3 <- scrape(session8) %>%
-    html_nodes('#acrPopover') %>%
-    html_text()
-prodreview3
 
 ```
-
